@@ -49,4 +49,4 @@ run:
 	$(OUT)
 
 clean:
-	del \f \q build\*.o
+	rmdir /s /q .\build
