@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "util/util.hpp"
+#include <math.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -44,9 +45,18 @@ int main(int argc, const char** argv) {
         return -1;
     }
 
+    GLint success;
+    unsigned int vertexShader = loadShader("shaders/vShader.glsl", GL_VERTEX_SHADER);
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if(!success) {
+        std::cout << "vertex shader compilation failed!!" << std::endl;
+    }
+    unsigned int fragmentShader = loadShader("shaders/fShader.glsl", GL_FRAGMENT_SHADER); 
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if(!success) {
+        std::cout << "fragment shader compilation failed!!" << std::endl;
+    }
 
-    unsigned int vertexShader = loadShader("shaders/vShader.shader", GL_VERTEX_SHADER);
-    unsigned int fragmentShader = loadShader("shaders/fShader.shader", GL_FRAGMENT_SHADER); 
     
     unsigned int shaderProgram;
     shaderProgram = glCreateProgram();
@@ -80,9 +90,11 @@ int main(int argc, const char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
     glBindVertexArray(0); 
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
+    float time;
+    float red, green, blue, alpha;
     
     while (!glfwWindowShouldClose(window))
     {           
@@ -91,6 +103,15 @@ int main(int argc, const char** argv) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shaderProgram);
+
+        time = glfwGetTime();
+        red = (sin(time) / 2) + 0.5;
+        green = (sin(time+1) / 2) + 0.5;
+        blue = (sin(time+2) / 2) + 0.5;
+        alpha = (sin(time+3) / 2) + 0.5;
+
+        // glUniform3f(glGetUniformLocation(shaderProgram, "color"), red, green, blue);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
