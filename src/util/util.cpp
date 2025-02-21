@@ -1,32 +1,23 @@
 #include "util.hpp"
 
 
-char* readFile(const char* filename) {
-    FILE *file = fopen(filename, "rb");
+const char* readFile(const std::string filename) {
 
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-    char *buffer = (char*)malloc(file_size + 1);
-    size_t bytes_read = fread(buffer, 1, file_size, file);
-    buffer[file_size] = '\0';
-    
-    fclose(file);
-    return buffer;
-}
-
-
-unsigned int loadShader(const char* path, GLenum type) {
-    unsigned int shader = glCreateShader(type);
-    char* source = readFile(path);
-    glShaderSource(shader, 1, &source, NULL);
-    glCompileShader(shader);
-
-    int  success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-    if(!success) {
-        return -1;
+    std::string vertexCode;
+    std::ifstream shaderFile;
+    // ensure ifstream objects can throw exceptions:
+    shaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    try 
+    {
+        shaderFile.open(filename);
+        std::stringstream shaderStream;
+        shaderStream << shaderFile.rdbuf();	
+        shaderFile.close();
+        vertexCode   = shaderStream.str();
     }
-    return shader;
+    catch(std::ifstream::failure e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    return vertexCode.c_str();
 }

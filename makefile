@@ -11,7 +11,7 @@ SRC = src\main.cpp include\glad.cpp
 
 BUILD_DIR = .\build
 # Object files
-OBJ = $(BUILD_DIR)\main.o $(BUILD_DIR)\include\glad.o $(BUILD_DIR)\util\util.o
+OBJ = $(BUILD_DIR)\main.o $(BUILD_DIR)\include\glad.o $(BUILD_DIR)\util\util.o $(BUILD_DIR)\util\shader.o
 
 # Output file
 OUT = $(BUILD_DIR)\app.exe
@@ -44,6 +44,10 @@ $(BUILD_DIR)\include\glad.o: include\glad.c
 $(BUILD_DIR)\util\util.o: src\util\util.cpp
 	-mkdir $(BUILD_DIR)\util
 	$(CXX) $(CXXFLAGS) -c src\util\util.cpp -o $(BUILD_DIR)\util\util.o
+
+$(BUILD_DIR)\util\shader.o: src\util\shader.cpp
+	-mkdir $(BUILD_DIR)\util
+	$(CXX) $(CXXFLAGS) -c src\util\shader.cpp -o $(BUILD_DIR)\util\shader.o
 
 run:
 	$(OUT)
